@@ -101,7 +101,7 @@ def create_data_set():
         for img in os.listdir(cur_dir):
             label = str(i)
             path = os.path.join(cur_dir,img)
-            img = cv2.resize(cv2.imread(path,cv2.IMREAD_GRAYSCALE),(image_size,image_size))
+            img = cv2.resize(cv2.imread(path),(image_size,image_size))
             training_data.append([np.array(img),np.array(label)])
     shuffle(training_data)
     print(training_data[0])
@@ -117,12 +117,12 @@ print("data loaded")
 train = training_data[:-500]
 test = training_data[-500:]
 
-train_x = np.array([i[0] for i in train]).reshape(-1,image_size,image_size,1)
+train_x = np.array([i[0] for i in train]).reshape(-1,image_size,image_size,3)
 y_train = [i[1] for i in train]
 train_y = np.array([i for i in y_train])
 train_y1 = to_categorical(train_y)
 
-test_x = np.array([i[0] for i in test]).reshape(-1,image_size,image_size,1)
+test_x = np.array([i[0] for i in test]).reshape(-1,image_size,image_size,3)
 y_test = [i[1] for i in test]
 test_y = np.array([i for i in y_test])
 test_y1 = to_categorical(test_y)
@@ -132,24 +132,24 @@ print(np.shape(test_y))
 print(np.shape(train_x))
 print(train_y[0])
 model = Sequential()
-model.add(Conv2D(32, (3, 3), input_shape=(image_size,image_size,1)))
+model.add(Conv3D(32, (3, 3, 3), input_shape=(image_size,image_size,3,1)))
 model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(MaxPooling3D(pool_size=(2, 2 , 3)))
 
-model.add(Conv2D(32, (3, 3)))
+model.add(Conv3D(32, (3, 3 ,3)))
 model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(MaxPooling3D(pool_size=(2, 2 ,3)))
 
-model.add(Conv2D(64, (3, 3)))
+model.add(Conv3D(64, (3, 3 ,3)))
 model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(MaxPooling3D(pool_size=(2, 2,3)))
 
-model.add(Conv2D(64, (3, 3)))
+model.add(Conv3D(64, (3, 3 ,3)))
 model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(MaxPooling3D(pool_size=(2, 2,3)))
 
 model.add(Flatten())
-model.add(Dense(128))
+model.add(Dense(512))
 model.add(Activation('relu'))
 model.add(Dropout(0.7))
 model.add(Dense(38))
